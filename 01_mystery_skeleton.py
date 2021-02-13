@@ -19,9 +19,9 @@ class Start:
         self.start_amount_entry.grid(row=1)
 
         # Play Button (row 2)
-        self.lowstakes_button = Button(text="Low ($5)",
+        self.low_stakes_button = Button(text="Low ($5)",
                                        command=lambda: self.to_game(1))
-        self.lowstakes_button.grid(row=2, pady=10)
+        self.low_stakes_button.grid(row=2, pady=10)
 
     def to_game(self, stakes):
         starting_balance = self.start_amount_entry.get()
@@ -34,7 +34,7 @@ class Game:
         print(starting_balance)
 
         # Disable low stakes button
-        partner.lowstakes_button.config(state=DISABLED)
+        partner.low_stakes_button.config(state=DISABLED)
 
         # Initialise variables
         self.balance = IntVar()
