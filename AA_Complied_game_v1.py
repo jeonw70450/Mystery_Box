@@ -150,7 +150,7 @@ class Start:
 
 
 class Game:
-    def __init__(self, partner, stakes, starting_balance):
+    def __init__(self, stakes, starting_balance):
         print(stakes)
         print(starting_balance)
 

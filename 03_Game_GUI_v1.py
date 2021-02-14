@@ -18,11 +18,16 @@ class Start:
         starting_balance = 50
         stakes = 1
 
-
-
         Game(self, stakes, starting_balance)
 
         root.withdraw()
+
+class Game(self, stakes, starting_balance):
+    def __init__(self):
+
+        self.game_frame = Frame(padx=10, pady=10)
+        self.start_frame.grid()
+
 
 
 
