@@ -83,12 +83,6 @@ class Start:
                                         command=lambda: self.to_help)
         self.start_help_button.grid(row=0, column=0)
 
-        self.start_statistics_button = Button(self.start_help_frame, text="Statistics / Export",
-                                              font="Arial 10 bold", bg="#E6E6E6",
-                                              command=lambda: self.to_stats)
-        self.start_statistics_button.grid(row=0, column=1, padx=5)
-
-        self.start_statistics_button.config(state=DISABLED)
 
     def check_funds(self):
         starting_balance = self.start_amount_entry.get()
