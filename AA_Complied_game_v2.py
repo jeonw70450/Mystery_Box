@@ -56,7 +56,7 @@ class Start:
 
         # Low Stakes Button
         self.low_stakes_button = Button(self.stakes_frame, text="Safe ($5)",
-                                        font=button_font, bg="#FF9933",
+                                        font=button_font, bg="#09FF33",
                                         command=lambda: self.to_game(1))
         self.low_stakes_button.grid(row=0, column=0, pady=10)
 
@@ -68,7 +68,7 @@ class Start:
 
         # High Stakes Button
         self.high_stakes_button = Button(self.stakes_frame, text="Extreme (15$)",
-                                         font=button_font, bg="#09FF33",
+                                         font=button_font, bg="#FF9933",
                                          command=lambda: self.to_game(3))
         self.high_stakes_button.grid(row=0, column=2, pady=10, padx=5)
 
@@ -137,7 +137,6 @@ class Start:
 class Game:
     def __init__(self, partner, stakes, starting_balance):
 
-
         self.balance = IntVar()
 
         self.balance.set(starting_balance)
@@ -148,7 +147,7 @@ class Game:
 
         # List for holding stats
         self.round_stats_list = []
-        self.game_stats_list=[starting_balance, starting_balance]
+        self.game_stats_list = [starting_balance, starting_balance]
 
         # Set up GUI
         self.game_box = Toplevel()
@@ -333,9 +332,11 @@ class Game:
 class History:
     def __init__(self, partner, calc_history, calc_stats):
 
-
         # disable history button
         partner.start_statistics_button.config(state=DISABLED)
+
+        heading = "Arial 12 bold"
+        content = "Arial 12"
 
         # Sets up child window (ie: history box)
         self.history_box = Toplevel()
@@ -348,34 +349,41 @@ class History:
         self.history_frame.grid()
 
         # Set up history heading (row 0)
-        self.how_heading = Label(self.history_frame, text="Calculation history",
+        self.how_heading = Label(self.history_frame, text="Game Statistics",
                                  font=("Arial", "15", "bold",)
-                                )
+                                 )
         self.how_heading.grid(row=0)
 
         # history text (label, row 1)
-        self.history_text = Label(self.history_frame, text="Here are your most recent calculations ",
+        self.history_text = Label(self.history_frame, text="Here are your Game Statistics. "
+                                                           "Please use the export button to access the result",
                                   justify=LEFT, width=40, wrap=250, padx=10, pady=10)
         self.history_text.grid(row=1)
 
-        # Generate string from list of calculations...
-
-        history_string = ""
-        if len(calc_history) > 7:
-            for item in range(0, 7):
-                history_string += calc_history[len(calc_history) - item - 1] + "\n"
+        # Stating Balance (row 2)
+        self.detail_frame = Frame(self.history_frame)
+        self.detail_frame.grid(row=2)
 
 
-        else:
-            for item in calc_history:
-                history_string += calc_history[len(calc_history) -
-                                               calc_history.index(item) - 1] + "\n"
-                self.history_text.config(text="Here are your most recent calculations ")
+        #Starting Balance row 2.0
 
-        # Label to display calculation history to user
-        self.calc_label = Label(self.history_frame, text=history_string,
-                                font="Arial 12", justify=LEFT)
-        self.calc_label.grid(row=2)
+        self.start_balance_label = Label(self.detail_frame,
+                                         text="Starting Balance:",
+                                         font=heading,
+                                         anchor="e")
+        self.start_balance_label.grid(row=0, column=0, padx=10)
+
+        self.start_balance_value_label = Label(self.detail_frame,
+                                               font=content, text="${}".format(calc_history))
+
+
+
+
+
+
+
+
+
 
         # Export / Dismiss Buttons Frame (Row 3)
         self.export_dismiss_frame = Frame(self.history_frame)
@@ -406,8 +414,6 @@ class Export:
 
         print(calc_history)
 
-
-
         # disable export button
         partner.export_button.config(state=DISABLED)
 
@@ -432,8 +438,8 @@ class Export:
         self.export_text.grid(row=1)
 
         # Warning text (label, row2)
-        self.export_text = Label(self.export_frame, text= "If the filename you entered already exists,"
-                                                          "it will be overwritten.", justify=LEFT,
+        self.export_text = Label(self.export_frame, text="If the filename you entered already exists,"
+                                                         "it will be overwritten.", justify=LEFT,
                                  fg='red', font="Arial 10 italic",
                                  wrap=225, padx=10, pady=10)
         self.export_text.grid(row=2, pady=10)
@@ -445,7 +451,7 @@ class Export:
 
         # Error Message Labels (initially blank, row 4)
         self.save_error_label = Label(self.export_frame, text="", fg="maroon"
-                                     )
+                                      )
         self.save_error_label.grid(row=4)
 
         # Save / Cancel Frame (row 5)
