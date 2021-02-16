@@ -171,7 +171,7 @@ class Game:
         self.game_box_frame = Frame(self.game_frame)
         self.game_box_frame.grid(row=2, pady=10)
 
-        photo = PhotoImage(file="question.gif")
+        photo = PhotoImage(file="./Mystery_winning_images/question.gif")
 
         self.prize1_label = Label(self.game_box_frame, image=photo,
                                   padx=10, pady=10)
@@ -242,20 +242,20 @@ class Game:
             prize_num = random.randint(1, 100)
 
             if 0 < prize_num <= 5:
-                prize = PhotoImage(file="gold.gif")
+                prize = PhotoImage(file="./Mystery_winning_images/gold.gif")
                 prize_list = "Gold\n(${})".format(5 * stakes_multiplier)
                 round_winnings += stakes_multiplier
             elif 5 < prize_num <= 25:
                 # get silver if number is between 1 and 3
-                prize = PhotoImage(file="silver.gif")
+                prize = PhotoImage(file="./Mystery_winning_images/silver.gif")
                 prize_list = "Silver\n(${})".format(2 * stakes_multiplier)
                 round_winnings += stakes_multiplier
             elif 25 < prize_num <= 65:
-                prize = PhotoImage(file="copper.gif")
+                prize = PhotoImage(file="./Mystery_winning_images/copper.gif")
                 prize_list = "Copper\n(${})".format(1 * stakes_multiplier)
                 round_winnings += stakes_multiplier
             else:
-                prize = PhotoImage(file="lead.gif")
+                prize = PhotoImage(file="./Mystery_winning_images/lead.gif")
                 prize_list = "Lead\n$0"
 
             prizes.append(prize)
