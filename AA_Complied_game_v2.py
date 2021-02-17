@@ -220,7 +220,7 @@ class Game:
 
         self.start_statistics_button = Button(self.start_help_frame, text="Statistics / Export",
                                               font="Arial 15 bold",
-                                              command=lambda: self.to_stats(self.round_stats_list, game_stats_list))
+                                              command=lambda: self.to_stats(self.round_stats_list,self.game_stats_list))
         self.start_statistics_button.grid(row=0, column=1, padx=5)
 
         # Quit button
@@ -244,16 +244,16 @@ class Game:
             if 0 < prize_num <= 5:
                 prize = PhotoImage(file="./Mystery_winning_images/gold.gif")
                 prize_list = "Gold\n(${})".format(5 * stakes_multiplier)
-                round_winnings += stakes_multiplier
+                round_winnings += 5 * stakes_multiplier
             elif 5 < prize_num <= 25:
                 # get silver if number is between 1 and 3
                 prize = PhotoImage(file="./Mystery_winning_images/silver.gif")
                 prize_list = "Silver\n(${})".format(2 * stakes_multiplier)
-                round_winnings += stakes_multiplier
+                round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
                 prize = PhotoImage(file="./Mystery_winning_images/copper.gif")
                 prize_list = "Copper\n(${})".format(1 * stakes_multiplier)
-                round_winnings += stakes_multiplier
+                round_winnings += 1 * stakes_multiplier
             else:
                 prize = PhotoImage(file="./Mystery_winning_images/lead.gif")
                 prize_list = "Lead\n$0"
@@ -281,6 +281,8 @@ class Game:
 
         # Set balnce to new balance
         self.balance.set(current_balance)
+
+        self.game_stats_list[1]=current_balance
 
         balance_statement = "Game Cost: ${} \nPayback: ${} \n" \
                             "Current Balance: ${}".format(5 * stakes_multiplier,
@@ -332,6 +334,8 @@ class Game:
 class History:
     def __init__(self, partner, calc_history, calc_stats):
 
+        print(calc_history)
+
         # disable history button
         partner.start_statistics_button.config(state=DISABLED)
 
@@ -350,7 +354,7 @@ class History:
 
         # Set up history heading (row 0)
         self.how_heading = Label(self.history_frame, text="Game Statistics",
-                                 font=("Arial", "15", "bold",)
+                                 font=("Arial", "19", "bold",)
                                  )
         self.how_heading.grid(row=0)
 
@@ -374,16 +378,44 @@ class History:
         self.start_balance_label.grid(row=0, column=0, padx=10)
 
         self.start_balance_value_label = Label(self.detail_frame,
-                                               font=content, text="${}".format(calc_history))
+                                               font=content, text="${}".format(calc_history[0]),
+                                               anchor="w")
+        self.start_balance_value_label.grid(row=0,column=1,padx=0)
 
+        # Current Balance (row2.2)
+        self.current_balance_label = Label (self.detail_frame,
+                                            text="Current Balance:", font=heading,
+                                            anchor="e")
+        self.current_balance_label.grid(row=1, column=0, padx=0)
 
+        self.current_balance_value_label= Label(self.detail_frame, font=content,text="${}".format(calc_history[1]),
+                                                anchor="w")
+        self.current_balance_value_label.grid(row=1,column=1,padx=10)
 
+        if calc_history[1] > calc_history[0]:
+            win_loss = "Amount won:"
+            amount=calc_history[1]-calc_history[0]
+            win_loss_fg = "#660000"
+        else:
+            win_loss = "Amount Lost:"
+            amount = calc_history[0] - calc_history[1]
+            win_loss_fg = "#660000:"
 
+        # Amount won/ lost (row 2.3)
+        self.wind_loss_label = Label(self.detail_frame,
+                                     text=win_loss, font=heading,
+                                     anchor="e")
+        self.wind_loss_label.grid(row=2, column=0, padx=0)
 
+        # Rounds Played (row2.4)
+        self.games_played_label = Label(self.detail_frame,
+                                        text="Rounds Played:", font=heading,
+                                        anchor="e")
+        self.games_played_label.grid(row=4,column=0,padx=0)
 
-
-
-
+        self.games_played_value_label = Label(self.detail_frame, font=content,
+                                              text=len(calc_history), anchor="w")
+        self.games_played_value_label.grid(row=4, column=1, padx=0)
 
         # Export / Dismiss Buttons Frame (Row 3)
         self.export_dismiss_frame = Frame(self.history_frame)
