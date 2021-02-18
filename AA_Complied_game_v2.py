@@ -290,13 +290,10 @@ class Game:
                                                           current_balance)
 
         # Add round results to stats list
-        round_summary = "{} | {} \ {} - Cost: ${} | " \
-                        "Payback: ${} | Current Balance: " \
-                        "${}".format(stats_prizes[0], stats_prizes[1],
-                                     stats_prizes[2],
-                                     5 * stakes_multiplier, round_winnings, current_balance)
+        round_summary = "Payback: ${} | Current Balance: " \
+                    "${}".format(5 * stakes_multiplier, round_winnings,
+                                 current_balance)
         self.round_stats_list.append(round_summary)
-        print(self.round_stats_list)
 
         # Edit label so users can see their new balance
         self.game_balance.configure(text=balance_statement)
@@ -320,6 +317,7 @@ class Game:
         get_help.help_text.configure(text="Choose an amount to play with and then choose your stakes. \n\nHigher "
                                           "the stakes means that it costs more per round but you can win "
                                           "more as well\n\n"
+                                            "Safe (x1), Medium(x2) and Extreme (x3)\n\n"
                                           "Once pressing your stakes there will be three mystery boxes. \n"
                                           "To reveal the contents press 'Spin!', if you do not have sufficient funds "
                                           "button will no longer operate. \n\n"
@@ -327,14 +325,15 @@ class Game:
                                           "The following winnings are... \n\n"
                                           "Lead ($0)|Copper ($1)|Silver($2)|Gold($5)")
 
-    def to_stats(self, calc_history, calc_stats):
-        History(self, calc_history, calc_stats)
+    def to_stats(self, game_history, game_stats):
+        History(self, game_history, game_stats)
 
 
 class History:
-    def __init__(self, partner, calc_history, calc_stats):
+    def __init__(self, partner, game_history, game_stats):
 
-        print(calc_history)
+
+        self.game_stats_all_list = []
 
         # disable history button
         partner.start_statistics_button.config(state=DISABLED)
@@ -375,10 +374,10 @@ class History:
                                          text="Starting Balance:",
                                          font=heading,
                                          anchor="e")
-        self.start_balance_label.grid(row=0, column=0, padx=10)
+        self.start_balance_label.grid(row=0, column=0, padx=0)
 
         self.start_balance_value_label = Label(self.detail_frame,
-                                               font=content, text="${}".format(calc_history[0]),
+                                               font=content, text="${}".format(game_stats[0]),
                                                anchor="w")
         self.start_balance_value_label.grid(row=0,column=1,padx=0)
 
@@ -388,24 +387,29 @@ class History:
                                             anchor="e")
         self.current_balance_label.grid(row=1, column=0, padx=0)
 
-        self.current_balance_value_label= Label(self.detail_frame, font=content,text="${}".format(calc_history[1]),
+        self.current_balance_value_label= Label(self.detail_frame, font=content,text="${}".format(game_stats[1]),
                                                 anchor="w")
-        self.current_balance_value_label.grid(row=1,column=1,padx=10)
+        self.current_balance_value_label.grid(row=1,column=1,padx=0)
 
-        if calc_history[1] > calc_history[0]:
+        if game_stats[1] >= game_stats[0]:
             win_loss = "Amount won:"
-            amount=calc_history[1]-calc_history[0]
-            win_loss_fg = "#660000"
+            amount = game_stats[1] - game_stats[0]
+            win_loss_fg = "green"
         else:
             win_loss = "Amount Lost:"
-            amount = calc_history[0] - calc_history[1]
-            win_loss_fg = "#660000:"
+            amount = game_stats[0] - game_stats[1]
+            win_loss_fg = "red"
 
         # Amount won/ lost (row 2.3)
         self.wind_loss_label = Label(self.detail_frame,
                                      text=win_loss, font=heading,
                                      anchor="e")
         self.wind_loss_label.grid(row=2, column=0, padx=0)
+
+        self.wind_loss_value_label = Label(self.detail_frame, font=content,
+                                           text="${}".format(amount),
+                                           fg=win_loss_fg, anchor="w")
+        self.wind_loss_value_label.grid(row=2 ,column=1 ,padx=0)
 
         # Rounds Played (row2.4)
         self.games_played_label = Label(self.detail_frame,
@@ -414,7 +418,7 @@ class History:
         self.games_played_label.grid(row=4,column=0,padx=0)
 
         self.games_played_value_label = Label(self.detail_frame, font=content,
-                                              text=len(calc_history), anchor="w")
+                                              text=len(game_history), anchor="w")
         self.games_played_value_label.grid(row=4, column=1, padx=0)
 
         # Export / Dismiss Buttons Frame (Row 3)
@@ -423,13 +427,14 @@ class History:
 
         # Export Button
         self.export_button = Button(self.export_dismiss_frame, text="Export",
-                                    font="Arial" "12" "bold",
-                                    command=partial(lambda: self.export(calc_history)))
-        self.export_button.grid(row=0, column=0)
+                                    font="Arial 15 bold", bg="darkblue",fg="white",
+                                    command=partial(lambda: self.export(game_history,self.game_stats_all_list)))
+        self.export_button.grid(row=0, column=0,padx=5)
 
         # Dismiss Button
         self.dismiss_button = Button(self.export_dismiss_frame, text="Dismiss",
-                                     font="Arial 12 ", command=partial(self.close_history, partner))
+                                     font="Arial 15 bold",bg="maroon",fg="white",
+                                    command=partial(self.close_history, partner))
         self.dismiss_button.grid(row=0, column=1)
 
     def close_history(self, partner):
@@ -437,14 +442,13 @@ class History:
         partner.start_statistics_button.config(state=NORMAL)
         self.history_box.destroy()
 
-    def export(self, calc_history):
-        Export(self, calc_history)
-
+    def export(self, game_history, all_game_stats):
+        Export(self, game_history, all_game_stats)
 
 class Export:
-    def __init__(self, partner, calc_history):
+    def __init__(self, partner, game_history, all_game_stats):
 
-        print(calc_history)
+        print(game_history)
 
         # disable export button
         partner.export_button.config(state=DISABLED)
@@ -456,7 +460,7 @@ class Export:
         self.export_box.protocol('WM_DELETE_WINDOW', partial(self.close_export, partner))
 
         # Set up GUI Frame
-        self.export_frame = Frame(self.export_box)
+        self.export_frame = Frame(self.export_box, width=300)
         self.export_frame.grid()
 
         # Set up Export heading (row 0)
@@ -492,7 +496,7 @@ class Export:
 
         # Save and Cancel buttons (row 0 of save_cancel_frame)
         self.save_button = Button(self.save_cancel_frame, text="Save",
-                                  command=partial(lambda: self.save_history(partner, calc_history)))
+                                  command=partial(lambda: self.save_history(partner, game_history,all_game_stats)))
         self.save_button.grid(row=0, column=0)
 
         self.cancel_button = Button(self.save_cancel_frame, text="Cancel",
@@ -504,7 +508,7 @@ class Export:
         partner.export_button.config(state=NORMAL)
         self.export_box.destroy()
 
-    def save_history(self, partner, calc_history):
+    def save_history(self, partner, game_history, game_stats):
 
         valid_char = "[A-Za-z0-9_]"
         has_error = "no"
@@ -539,7 +543,15 @@ class Export:
 
             f = open(filename, "w+")
 
-            for item in calc_history:
+            f.write("Game Statistics\n\n")
+
+            for round in game_stats:
+                f.write(round + "\n")
+
+            #Heading for rounds
+            f.write("\nRound Details\n\n")
+
+            for item in game_history:
                 f.write(item + "\n")
 
             f.close()
