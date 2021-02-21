@@ -1,7 +1,6 @@
 from tkinter import *
 from functools import partial
-import glob
-from PIL import Image
+import os
 import random
 
 
@@ -241,21 +240,19 @@ class Game:
         stats_prizes = []
 
         copper = []
-        for cu in glob.glob("Mystery_box_winnings_images/copper/*.gif"):
-            cim=Image.open(cu)
-            copper.append(cim)
+        for cu in os.listdir("Mystery_box_winnings_images/cu"):
+            if cu.endswith(".gif"):
+                copper.append(cu)
 
         silver = []
-        for ag in glob.glob("Mystery_box_winnings_images/silver/*.gif"):
-            sim=Image.open(ag)
-            silver.append(sim)
+        for ag in os.listdir("Mystery_box_winnings_images/ag"):
+            if ag.endswith(".gif"):
+                silver.append(ag)
 
         gold = []
-        for au in glob.glob("Mystery_box_winnings_images/gold/*.gif"):
-            gim=Image.open(au)
-            gold.append(gim)
-
-
+        for au in os.listdir("Mystery_box_winnings_images/au"):
+            if au.endswith(".gif"):
+                gold.append(au)
 
         for thing in range(0, 3):
 
@@ -271,6 +268,7 @@ class Game:
                 round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
                 prize = PhotoImage(file=copper[stakes_multiplier-1])
+                print(prize)
                 prize_list = "Copper\n(${})".format(1 * stakes_multiplier)
                 round_winnings += 1 * stakes_multiplier
             else:
