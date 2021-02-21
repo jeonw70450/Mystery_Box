@@ -1,5 +1,7 @@
 from tkinter import *
 from functools import partial
+import glob
+from PIL import Image
 import random
 
 
@@ -171,7 +173,7 @@ class Game:
         self.game_box_frame = Frame(self.game_frame)
         self.game_box_frame.grid(row=2, pady=10)
 
-        photo = PhotoImage(file="./Mystery_winning_images/question.gif")
+        photo = PhotoImage(file="./Mystery_box_winnings_images/question.gif")
 
         self.prize1_label = Label(self.game_box_frame, image=photo,
                                   padx=10, pady=10)
@@ -237,26 +239,43 @@ class Game:
         round_winnings = 0
         prizes = []
         stats_prizes = []
+
+        copper = []
+        for cu in glob.glob("Mystery_box_winnings_images/copper/*.gif"):
+            cim=Image.open(cu)
+            copper.append(cim)
+
+        silver = []
+        for ag in glob.glob("Mystery_box_winnings_images/silver/*.gif"):
+            sim=Image.open(ag)
+            silver.append(sim)
+
+        gold = []
+        for au in glob.glob("Mystery_box_winnings_images/gold/*.gif"):
+            gim=Image.open(au)
+            gold.append(gim)
+
+
+
         for thing in range(0, 3):
 
             prize_num = random.randint(1, 100)
 
             if 0 < prize_num <= 5:
-                prize = PhotoImage(file="./Mystery_winning_images/gold.gif")
+                prize = PhotoImage(file=gold[stakes_multiplier-1])
                 prize_list = "Gold\n(${})".format(5 * stakes_multiplier)
                 round_winnings += 5 * stakes_multiplier
             elif 5 < prize_num <= 25:
-                # get silver if number is between 1 and 3
-                prize = PhotoImage(file="./Mystery_winning_images/silver.gif")
+                prize = PhotoImage(file=silver[stakes_multiplier-1])
                 prize_list = "Silver\n(${})".format(2 * stakes_multiplier)
                 round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
-                prize = PhotoImage(file="./Mystery_winning_images/copper.gif")
+                prize = PhotoImage(file=copper[stakes_multiplier-1])
                 prize_list = "Copper\n(${})".format(1 * stakes_multiplier)
                 round_winnings += 1 * stakes_multiplier
             else:
-                prize = PhotoImage(file="./Mystery_winning_images/lead.gif")
-                prize_list = "Lead\n$0"
+                prize = PhotoImage(file="./Mystery_box_winnings_images/lead.gif")
+                prize_list = "Lead $0"
 
             prizes.append(prize)
             stats_prizes.append(prize_list)
@@ -279,7 +298,7 @@ class Game:
         # Add winnings
         current_balance += round_winnings
 
-        # Set balnce to new balance
+        # Set balance to new balance
         self.balance.set(current_balance)
 
         self.game_stats_list[1]=current_balance
@@ -290,8 +309,9 @@ class Game:
                                                           current_balance)
 
         # Add round results to stats list
-        round_summary = "Payback: ${} | Current Balance: " \
-                    "${}".format(5 * stakes_multiplier, round_winnings,
+        round_summary =  \
+                        "Round Winnings ${} | Balance: " \
+                    "${}".format(round_winnings,
                                  current_balance)
         self.round_stats_list.append(round_summary)
 
@@ -331,9 +351,6 @@ class Game:
 
 class History:
     def __init__(self, partner, game_history, game_stats):
-
-
-        self.game_stats_all_list = []
 
         # disable history button
         partner.start_statistics_button.config(state=DISABLED)
@@ -428,7 +445,7 @@ class History:
         # Export Button
         self.export_button = Button(self.export_dismiss_frame, text="Export",
                                     font="Arial 15 bold", bg="darkblue",fg="white",
-                                    command=partial(lambda: self.export(game_history,self.game_stats_all_list)))
+                                    command=partial(lambda: self.export(game_history,game_stats)))
         self.export_button.grid(row=0, column=0,padx=5)
 
         # Dismiss Button
@@ -447,8 +464,6 @@ class History:
 
 class Export:
     def __init__(self, partner, game_history, all_game_stats):
-
-        print(game_history)
 
         # disable export button
         partner.export_button.config(state=DISABLED)
@@ -514,7 +529,6 @@ class Export:
         has_error = "no"
 
         filename = self.filename_entry.get()
-        print(filename)
 
         for letter in filename:
             if re.match(valid_char, letter):
@@ -545,11 +559,12 @@ class Export:
 
             f.write("Game Statistics\n\n")
 
-            for round in game_stats:
-                f.write(round + "\n")
+
+            f.write("Starting Balance ${}".format(game_stats[0]) + "\n"
+                        "Ending Balance ${}".format(game_stats[1]) + "\n")
 
             #Heading for rounds
-            f.write("\nRound Details\n\n")
+            f.write("\nRound Details - Most Recent at the bottom\n\n")
 
             for item in game_history:
                 f.write(item + "\n")
