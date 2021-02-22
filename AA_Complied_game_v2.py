@@ -3,7 +3,6 @@ from functools import partial
 import os
 import random
 
-
 class Start:
     def __init__(self, partner):
         # Start GUI
@@ -133,8 +132,6 @@ class Start:
         Game(self, stakes, starting_balance)
 
         self.start_frame.destroy()
-
-
 class Game:
     def __init__(self, partner, stakes, starting_balance):
 
@@ -347,8 +344,6 @@ class Game:
 
     def to_stats(self, game_history, game_stats):
         History(self, game_history, game_stats)
-
-
 class History:
     def __init__(self, partner, game_history, game_stats):
 
@@ -461,7 +456,6 @@ class History:
 
     def export(self, game_history, all_game_stats):
         Export(self, game_history, all_game_stats)
-
 class Export:
     def __init__(self, partner, game_history, all_game_stats):
 
@@ -572,8 +566,6 @@ class Export:
             f.close()
 
             self.close_export(partner)
-
-
 class Help:
     def __init__(self, partner):
         # disable help button
