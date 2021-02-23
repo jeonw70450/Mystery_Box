@@ -443,6 +443,9 @@ class History:
                                     command=partial(lambda: self.export(game_history,game_stats)))
         self.export_button.grid(row=0, column=0,padx=5)
 
+        if len(game_history) == 0:
+            self.export_button.config(state=DISABLED)
+
         # Dismiss Button
         self.dismiss_button = Button(self.export_dismiss_frame, text="Dismiss",
                                      font="Arial 15 bold",bg="maroon",fg="white",
